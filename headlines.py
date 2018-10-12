@@ -1,5 +1,6 @@
+import os
 import feedparser
-from flask import Flask
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -13,14 +14,12 @@ RSS_FEEDS = {'bbc': "http://feeds.bbci.co.uk/news/rss.xml",
 def get_news(publication='bbc'):
     feed = feedparser.parse(RSS_FEEDS[publication])
     first_article = feed['entries'][0]
-    return """<html>
-        <body>
-            <h1> Headlines </h1>
-            <b>{0}</b> <br/>
-            <i>{1}</i> <br/>
-            <p>{2}</p> <br/>
-        </body>
-    </html>""".format(first_article.get("title"), first_article.get("published"), first_article.get("summary"))
-    
+    return render_template("home.html", articles=feed['entries'])
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+            'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 if __name__=="__main__":
     app.run(port=4141, debug=True)
