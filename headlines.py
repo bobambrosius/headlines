@@ -10,8 +10,7 @@ RSS_FEEDS = {'bbc': "http://feeds.bbci.co.uk/news/rss.xml",
              'iol': "http://rss.iol.io/iol/news"}
 
 @app.route("/")
-@app.route("/<publication>")
-def get_news(publication='bbc'):
+def get_news():
     query = request.args.get("publication")
     if not query or query.lower() not in RSS_FEEDS:
         publication = "bbc"
