@@ -4,6 +4,10 @@
 	</head>
     <body>
         <h1>Headlines</h1>
+        <form>
+        	<input type="text" name="publication" placeholder="search" />
+        	<input type="submit" value="Zoek" />
+        </form>
         {% for article in articles %}
 	        <b><a href="{{article.link}}" target="_blank">{{article.title}}</a></b><br/>
 	        <i>{{article.published}}</i><br/>
