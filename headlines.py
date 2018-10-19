@@ -4,6 +4,7 @@ from flask import Flask, make_response, render_template, request, send_from_dire
 #from idlelib import query
 import json
 import os
+import ssl
 import urllib
 
 app = Flask(__name__)
@@ -30,11 +31,11 @@ def get_news(query):
     feed = feedparser.parse(RSS_FEEDS[publication])
     return feed['entries']
 
-def get_rate(frm, to):
+def get_rate(crncy_from, crncy_to):
     all_currency = urllib.request.urlopen(CURRENCY_URL).read()
     parsed = json.loads(all_currency).get('rates')
-    frm_rate = parsed.get(frm.upper())
-    to_rate = parsed.get(to.upper())
+    frm_rate = parsed.get(crncy_from.upper())
+    to_rate = parsed.get(crncy_to.upper())
     return to_rate/frm_rate, parsed.keys()
     
 def get_weather(query):
@@ -61,6 +62,9 @@ def get_value_with_fallback(key):
 
 @app.route("/")
 def home():
+    # Voorkom de fout [SSL: CERTIFICATE_VERIFY_FAILED]
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
     # headlines
     publication = get_value_with_fallback('publication')
     articles = get_news(publication)
